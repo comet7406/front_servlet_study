@@ -26,12 +26,14 @@ function Signup(props) {
         email: ""
     });
 
-    const handleInputChange = (e) => {
+    const handleInputChange = async (e) => {
         setSignupUser({
             ...signupUser,
             [e.target.name]: e.target.value
         })
     }
+    
+    console.log(signupUser);
 
     const handleSubmitClick = () => {
         // 회원가입 요청
@@ -41,20 +43,28 @@ function Signup(props) {
             }
         }
 
-        axios.get("http://localhost:8080/servlet_study_haeseong/auth/signup/duplicate/username", option)
-        .then((response) => {
-            console.log(response);
-            const isDuplicateUsername = response.data;
-            if(isDuplicateUsername) {
-                // 아이디가 중복되었다.
-            
-            }else {
-                // 사용 가능한 아이디.
+        const signup = async () => {
 
+            let response = await axios.get("http://localhost:8080/servlet_study_haeseong/auth/signup/duplicate/username", option);
+
+            if(response.data) {
+                alert("중복된 아이디 입니다.");
+                return;
             }
-        }).catch((error) => {
 
-        })
+            try {
+                response = await axios.post("http://localhost:8080/servlet_study_haeseong/auth/signup", signupUser);
+                if(!response.data) {
+                    throw new Error(response);
+                }
+                alert("회원가입 성공!");
+                navigate("/signin");
+            }catch(error) {
+                console.log(error);
+            }
+        };
+
+        signup();
 
     }
 

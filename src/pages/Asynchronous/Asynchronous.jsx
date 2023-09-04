@@ -66,11 +66,38 @@ function Asynchronous(props) {
         });
     }
 
+    const handleClick3 = () => {
+
+        const printUser2 = () => {
+            return new Promise((resolve, reject) => {
+                resolve("유저2");
+                reject(new Error("오류2"));
+            });
+        }
+
+        printUser2().then(r => console.log(r));
+
+        const printUser = async () => {
+            try{
+                await printUser2().then((r) => {
+                    console.log(r);
+                });
+                throw new Error("오류 처리");
+            } catch(error) {
+                console.log(error);
+            }
+            return "유저1";
+        }
+
+        printUser().then(r => console.log(r));
+
+    }
 
     return (
         <div>
-            <button onClick={handleClick}>클릭1</button>    
+            <button onClick={handleClick}>클릭</button>    
             <button onClick={handleClick2}>클릭2</button>    
+            <button onClick={handleClick3}>클릭3</button>    
         </div>
     );
 }
