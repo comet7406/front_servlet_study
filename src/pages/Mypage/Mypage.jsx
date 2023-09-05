@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 /** @jsxImportSource @emotion/react */
 import { css } from '@emotion/react';
+import axios from 'axios';
 
 
 
 function Mypage(props) {
-    const [ user, setUser ] = useState({
+    const [ profile, setProfile ] = useState({
         username: "",
         password: "",
         name: "",
@@ -13,16 +14,29 @@ function Mypage(props) {
     });
 
     useEffect(() => {
-        
+        const getProfile = async() => {
+            try{
+                const response = await axios.get(`http://localhost:8080/servlet_study_haeseong/mypage/profile`, {
+                    headers: {
+                        Authorization: localStorage.getItem("token")
+                    }
+                });
+                setProfile(response.data);
+            }catch(error) {
+                console.log(error);
+            }
+
+        }
+        getProfile();
     }, []);
 
     return (
         <>
             <h1>마이페이지</h1>
-            <p>username: {user.username}</p>            
-            <p>password: {user.password}</p>            
-            <p>name: {user.name}</p>            
-            <p>email: {user.email}</p>            
+            <p>username: {profile?.username}</p>            
+            <p>password: {profile?.password}</p>            
+            <p>name: {profile?.name}</p>            
+            <p>email: {profile?.email}</p>            
         </>
     );
 }
